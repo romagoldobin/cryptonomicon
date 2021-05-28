@@ -1,13 +1,19 @@
 module.exports = {
-  root: true,
   env: {
-    node: true,
+    browser: true,
+    es2021: true,
   },
   extends: [
-    'plugin:vue/vue3-essential',
-    '@vue/airbnb',
+    'plugin:vue/essential',
+    'airbnb-base',
+  ],
+  parserOptions: {
+    ecmaVersion: 12,
+    sourceType: 'module',
+  },
+  plugins: [
+    'vue',
   ],
   rules: {
-    'vue/no-unused-vars': 'error',
   },
 };
