@@ -1,3 +1,4 @@
+/* eslint-disable quote-props */
 module.exports = {
   env: {
     browser: true,
@@ -16,5 +17,6 @@ module.exports = {
     'vue',
   ],
   rules: {
+    'treatUndefinedAsUnspecified': 'off',
   },
 };
