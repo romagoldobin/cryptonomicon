@@ -4,7 +4,8 @@ module.exports = {
     es2021: true,
   },
   extends: [
-    'plugin:vue/essential',
+    'eslint:recommended',
+    'plugin:vue/recommended',
     'airbnb-base',
   ],
   parserOptions: {
