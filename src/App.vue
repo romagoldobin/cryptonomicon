@@ -9,6 +9,7 @@
           v-for="ticker in tickers"
           :key="ticker.name"
           :ticker="ticker"
+          :is-selected="selectedTicker === ticker"
           @click="selectedTicker = ticker"
         />
       </dl>
