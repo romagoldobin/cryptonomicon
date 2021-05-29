@@ -23,6 +23,7 @@
 import VTickerForm from './components/VTickerForm.vue';
 import VTickerCard from './components/VTickerCard.vue';
 import VTickerChart from './components/VTickerChart.vue';
+import { key } from './key';
 
 export default {
   name: 'App',
@@ -43,11 +44,31 @@ export default {
     };
   },
   computed: {
+    updatedTicker: {
+      // eslint-disable-next-line max-len
+      get() { return this.tickers.findIndex((ticker) => ticker.name === this.selectedTicker.name); },
+      set(value) { this.tickers[this.updatedTicker].price = value; },
+    },
+  },
+  watch: {
+    selectedTicker: {
+      handler(selectedTicker) {
+        if (!selectedTicker.name) return;
+        this.fetchCryptoCurrency();
+      },
+    },
   },
   methods: {
     addTicker(tickername) {
       const ticker = { name: tickername, price: 0 };
       this.tickers.push(ticker);
+    },
+    fetchCryptoCurrency() {
+      setInterval(async () => {
+        const response = await fetch(`https://min-api.cryptocompare.com/data/price?fsym=${this.selectedTicker.name}&tsyms=USD&api_key=${key}`);
+        const data = await response.json();
+        this.updatedTicker = data.USD;
+      }, 1000);
     },
   },
 };
