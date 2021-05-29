@@ -2,10 +2,15 @@
 <template>
   <div class="container mx-auto flex flex-col items-center bg-gray-100 p-4">
     <div class="container">
-      <VTickerForm />
+      <VTickerForm @formSubmit="addTicker" />
       <hr class="w-full border-t border-gray-600 my-2">
       <dl class="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-3">
-        <VTickerCard />
+        <VTickerCard
+          v-for="ticker in tickers"
+          :key="ticker.name"
+          :ticker="ticker"
+          @click="selectedTicker = ticker"
+        />
       </dl>
       <hr class="w-full border-t border-gray-600 my-4">
       <VTickerChart />
@@ -33,8 +38,16 @@ export default {
           price: 44000,
         },
       ],
-      ticker: null,
+      selectedTicker: null,
     };
+  },
+  computed: {
+  },
+  methods: {
+    addTicker(tickername) {
+      const ticker = { name: tickername, price: 0 };
+      this.tickers.push(ticker);
+    },
   },
 };
 </script>
