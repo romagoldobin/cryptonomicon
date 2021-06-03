@@ -41,6 +41,7 @@ export default {
         },
       ],
       selectedTicker: null,
+      updateInterval: undefined,
     };
   },
   computed: {
@@ -52,23 +53,32 @@ export default {
   },
   watch: {
     selectedTicker: {
-      handler(selectedTicker) {
-        if (!selectedTicker.name) return;
-        this.fetchCryptoCurrency();
+      handler(selectedTicker, oldSelectedTicker) {
+        if (selectedTicker.name) {
+          if (selectedTicker !== oldSelectedTicker && !oldSelectedTicker) {
+            this.updateInterval = setInterval(async () => {
+              this.updatedTicker = await this.fetchCryptoCurrency(selectedTicker.name);
+            }, 1000);
+          } else {
+            clearInterval(this.updateInterval);
+            this.updateInterval = setInterval(async () => {
+              this.updatedTicker = await this.fetchCryptoCurrency(selectedTicker.name);
+            }, 1000);
+          }
+        }
       },
     },
   },
   methods: {
-    addTicker(tickername) {
-      const ticker = { name: tickername, price: 0 };
+    async addTicker(tickerName) {
+      const ticker = { name: tickerName, price: 0 };
+      ticker.price = await this.fetchCryptoCurrency(ticker.name);
       this.tickers.push(ticker);
     },
-    fetchCryptoCurrency() {
-      setInterval(async () => {
-        const response = await fetch(`https://min-api.cryptocompare.com/data/price?fsym=${this.selectedTicker.name}&tsyms=USD&api_key=${key}`);
-        const data = await response.json();
-        this.updatedTicker = data.USD;
-      }, 1000);
+    async fetchCryptoCurrency(tickerName) {
+      const response = await fetch(`https://min-api.cryptocompare.com/data/price?fsym=${tickerName}&tsyms=USD&api_key=${key}`);
+      const data = await response.json();
+      return data.USD;
     },
   },
 };
