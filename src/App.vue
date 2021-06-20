@@ -71,9 +71,13 @@ export default {
   },
   methods: {
     async addTicker(tickerName) {
-      const ticker = { name: tickerName, price: 0 };
-      ticker.price = await this.fetchCryptoCurrency(ticker.name);
-      this.tickers.push(ticker);
+      const isExist = this.tickers.find((ticker) => ticker.name === tickerName);
+
+      if (!isExist) {
+        const ticker = { name: tickerName, price: 0 };
+        ticker.price = await this.fetchCryptoCurrency(ticker.name);
+        this.tickers.push(ticker);
+      }
     },
     async fetchCryptoCurrency(tickerName) {
       const response = await fetch(`https://min-api.cryptocompare.com/data/price?fsym=${tickerName}&tsyms=USD&api_key=${key}`);
