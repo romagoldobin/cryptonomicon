@@ -11,6 +11,7 @@
           :ticker="ticker"
           :is-selected="selectedTicker === ticker"
           @click="selectedTicker = ticker"
+          @onDelete="onDelete($event)"
         />
       </dl>
       <hr class="w-full border-t border-gray-600 my-4">
@@ -54,17 +55,15 @@ export default {
   watch: {
     selectedTicker: {
       handler(selectedTicker, oldSelectedTicker) {
-        if (selectedTicker.name) {
-          if (selectedTicker !== oldSelectedTicker && !oldSelectedTicker) {
-            this.updateInterval = setInterval(async () => {
-              this.updatedTicker = await this.fetchCryptoCurrency(selectedTicker.name);
-            }, 1000);
-          } else {
-            clearInterval(this.updateInterval);
-            this.updateInterval = setInterval(async () => {
-              this.updatedTicker = await this.fetchCryptoCurrency(selectedTicker.name);
-            }, 1000);
-          }
+        if (selectedTicker.name && !oldSelectedTicker) {
+          this.updateInterval = setInterval(async () => {
+            this.updatedTicker = await this.fetchCryptoCurrency(selectedTicker.name);
+          }, 1000);
+        } else {
+          clearInterval(this.updateInterval);
+          this.updateInterval = setInterval(async () => {
+            this.updatedTicker = await this.fetchCryptoCurrency(selectedTicker.name);
+          }, 1000);
         }
       },
     },
@@ -83,6 +82,11 @@ export default {
       const response = await fetch(`https://min-api.cryptocompare.com/data/price?fsym=${tickerName}&tsyms=USD&api_key=${key}`);
       const data = await response.json();
       return data.USD;
+    },
+
+    onDelete(tickerName) {
+      this.tickers = this.tickers.filter((ticker) => ticker.name !== tickerName);
+      clearInterval(this.updateInterval);
     },
   },
 };
