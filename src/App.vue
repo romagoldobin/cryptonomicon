@@ -1,4 +1,3 @@
-<!-- eslint-disable max-len -->
 <template>
   <div class="container mx-auto flex flex-col items-center bg-gray-100 p-4">
     <div class="container">
@@ -10,7 +9,7 @@
           :key="ticker.name"
           :ticker="ticker"
           :is-selected="selectedTicker === ticker"
-          @click="selectedTicker = ticker"
+          @click="onSelect(ticker)"
           @onDelete="onDelete($event)"
         />
       </dl>
@@ -19,7 +18,7 @@
     </div>
   </div>
 </template>
-
+<!-- eslint-disable max-len -->
 <script>
 import VTickerForm from './components/VTickerForm.vue';
 import VTickerCard from './components/VTickerCard.vue';
@@ -42,7 +41,7 @@ export default {
         },
       ],
       selectedTicker: null,
-      updateInterval: undefined,
+      updateInterval: null,
     };
   },
   computed: {
@@ -83,10 +82,16 @@ export default {
       const data = await response.json();
       return data.USD;
     },
-
     onDelete(tickerName) {
       this.tickers = this.tickers.filter((ticker) => ticker.name !== tickerName);
       clearInterval(this.updateInterval);
+    },
+    onSelect(ticker) {
+      if (this.selectedTicker?.name === ticker.name) {
+        this.selectedTicker = null;
+      } else {
+        this.selectedTicker = ticker;
+      }
     },
   },
 };
